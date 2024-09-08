@@ -3,11 +3,30 @@ name: Self-hosted Windows Runner
 on: [push]
 
 jobs:
-    run-on-self-hosted-windows:
-      runs-on: self-hosted
-      steps:
-          - name: Check out the code
-            uses: actions/checkout@v3
+  run-on-self-hosted-windows:
+    runs-on: self-hosted
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
 
-          - name: Print Message
-            run: echo "I'm running on GitHub self-hosted Windows host"
+      - name: Print Message
+        run: echo "I'm running on GitHub self-hosted Windows host"
+
+      # Get the current timestamp
+      - name: Get Timestamp
+        id: get-timestamp
+        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      # Create folder and copy utilityinfo file
+      - name: Create WB_<timestamp> folder and copy utilityinfo
+        run: |
+          FOLDER_NAME="WB_${{ env.timestamp }}"
+          mkdir $FOLDER_NAME
+          cp ./utilityinfo $FOLDER_NAME/
+
+      # Upload WB_<timestamp> folder as an artifact
+      - name: Upload WB_<timestamp> as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: WB_${{ env.timestamp }}
+          path: WB_${{ env.timestamp }}

@@ -54,5 +54,5 @@ jobs:
                 "value" = "The build has completed successfully. Artifact name: WB_${{ env.timestamp }}"
               }
             )
-          } | ConvertTo-Json
+          } | ConvertTo-Json -Compress
           Invoke-WebRequest -Uri $url -Method Post -Headers $headers -Body $body

@@ -30,10 +30,6 @@ jobs:
           name: WB_${{ env.timestamp }}
           path: WB_${{ env.timestamp }}
 
-      - name: Debug API Key
-        run: echo "SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}"
-        shell: bash
-
       - name: Send Notification Email
         shell: powershell
         env:

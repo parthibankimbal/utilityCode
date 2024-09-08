@@ -29,34 +29,3 @@ jobs:
         with:
           name: WB_${{ env.timestamp }}
           path: WB_${{ env.timestamp }}
-
-      - name: Send Notification Email
-        shell: powershell
-        env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        run: |
-          $url = "https://api.sendgrid.com/v3/mail/send"
-          $headers = @{
-            "Authorization" = "Bearer $env:SENDGRID_API_KEY"
-            "Content-Type" = "application/json"
-          }
-
-          $body = @{
-            "personalizations" = @(
-              @{
-                "to" = @("parthiban.ethiraj@kimbai.io")
-                "subject" = "Build and Artifact Notification"
-              }
-            )
-            "from" = @{
-              "email" = "parthiban.ethiraj@kimbai.io"
-            }
-            "content" = @(
-              @{
-                "type" = "text/plain"
-                "value" = "The build has completed successfully. Artifact name: WB_${{ env.timestamp }}"
-              }
-            )
-          } | ConvertTo-Json -Compress
-
-          Invoke-WebRequest -Uri $url -Method Post -Headers $headers -Body $body

@@ -1,0 +1,13 @@
+name: Self-hosted Windows Runner
+
+on: [push]
+
+jobs:
+    run-on-self-hosted-windows:
+      runs-on: self-hosted
+      steps:
+          - name: Check out the code
+            uses: actions/checkout@v3
+
+          - name: Print Message
+            run: echo "I'm running on GitHub self-hosted Windows host"

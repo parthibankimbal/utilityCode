@@ -1,10 +1,11 @@
-name: Self-hosted Windows Runner
+name: Build and Notify
 
 on: [push]
 
 jobs:
-  run-on-self-hosted-windows:
+  build:
     runs-on: self-hosted
+
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
@@ -12,22 +13,44 @@ jobs:
       - name: Print Message
         run: echo "I'm running on GitHub self-hosted Windows host"
 
-      # Get the current timestamp using Windows PowerShell
       - name: Get Timestamp
         shell: powershell
         run: |
           $timestamp = (Get-Date).ToString('yyyyMMddHHmmss')
           Add-Content -Path $env:GITHUB_ENV -Value "timestamp=$timestamp"
 
-      # Create folder and copy utilityinfo file
       - name: Create WB_<timestamp> folder and copy utilityinfo
         run: |
           mkdir WB_${{ env.timestamp }}
           copy utilityinfo WB_${{ env.timestamp }}\
 
-      # Upload WB_<timestamp> folder as an artifact
       - name: Upload WB_<timestamp> as an artifact
         uses: actions/upload-artifact@v3
         with:
           name: WB_${{ env.timestamp }}
           path: WB_${{ env.timestamp }}
+
+      - name: Send Notification Email
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: |
+          curl -X POST "https://api.sendgrid.com/v3/mail/send" \
+          -H "Authorization: Bearer $SENDGRID_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "personalizations": [
+              {
+                "to": [
+                  {"email": "parthiban.ethiraj@kimbai.io"}
+                ],
+                "subject": "Build and Artifact Notification"
+              }
+            ],
+            "from": {"email": "parthiban.ethiraj@kimbai.io"},
+            "content": [
+              {
+                "type": "text/plain",
+                "value": "The build has completed successfully. Artifact name: WB_'${{ env.timestamp }}'"
+              }
+            ]
+          }'

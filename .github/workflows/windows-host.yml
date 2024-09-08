@@ -12,17 +12,19 @@ jobs:
       - name: Print Message
         run: echo "I'm running on GitHub self-hosted Windows host"
 
-      # Get the current timestamp
+      # Get the current timestamp using PowerShell
       - name: Get Timestamp
         id: get-timestamp
-        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        shell: pwsh
+        run: |
+          $timestamp = (Get-Date).ToString('yyyyMMddHHmmss')
+          echo "timestamp=$timestamp" >> $GITHUB_ENV
 
       # Create folder and copy utilityinfo file
       - name: Create WB_<timestamp> folder and copy utilityinfo
         run: |
-          FOLDER_NAME="WB_${{ env.timestamp }}"
-          mkdir $FOLDER_NAME
-          cp ./utilityinfo $FOLDER_NAME/
+          mkdir WB_${{ env.timestamp }}
+          cp ./utilityinfo WB_${{ env.timestamp }}/
 
       # Upload WB_<timestamp> folder as an artifact
       - name: Upload WB_<timestamp> as an artifact

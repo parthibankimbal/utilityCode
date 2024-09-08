@@ -40,14 +40,11 @@ jobs:
             "Authorization" = "Bearer $env:SENDGRID_API_KEY"
             "Content-Type" = "application/json"
           }
+
           $body = @{
             "personalizations" = @(
               @{
-                "to" = @(
-                  @{
-                    "email" = "parthiban.ethiraj@kimbai.io"
-                  }
-                )
+                "to" = @("parthiban.ethiraj@kimbai.io")
                 "subject" = "Build and Artifact Notification"
               }
             )
@@ -61,4 +58,5 @@ jobs:
               }
             )
           } | ConvertTo-Json -Compress
+
           Invoke-WebRequest -Uri $url -Method Post -Headers $headers -Body $body

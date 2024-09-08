@@ -43,17 +43,22 @@ jobs:
           $body = @{
             "personalizations" = @(
               @{
-                "to" = @(@{ "email" = "parthiban.ethiraj@kimbai.io" })
+                "to" = @(
+                  @{
+                    "email" = "parthiban.ethiraj@kimbai.io"
+                  }
+                )
                 "subject" = "Build and Artifact Notification"
               }
             )
-            "from" = @{ "email" = "parthiban.ethiraj@kimbai.io" }
+            "from" = @{
+              "email" = "parthiban.ethiraj@kimbai.io"
+            }
             "content" = @(
               @{
                 "type" = "text/plain"
                 "value" = "The build has completed successfully. Artifact name: WB_${{ env.timestamp }}"
               }
             )
-          }
-          $bodyJson = $body | ConvertTo-Json -Compress
-          Invoke-WebRequest -Uri $url -Method Post -Headers $headers -Body $bodyJson
+          } | ConvertTo-Json -Compress
+          Invoke-WebRequest -Uri $url -Method Post -Headers $headers -Body $body

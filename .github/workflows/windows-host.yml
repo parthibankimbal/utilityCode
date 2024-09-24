@@ -52,9 +52,9 @@ jobs:
           
           # Create the zip file with the specified files
           Compress-Archive -Path `
-            '..\..\00Build\CS+_CCRL\ImageBuilder\Config.rpj', `
-            '..\..\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.dll', `
-            '..\..\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.xml', `
-            '..\..\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Config.rpj', `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.dll', `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.xml', `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
           -DestinationPath $zipFilePath
         shell: powershell

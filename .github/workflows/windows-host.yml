@@ -17,7 +17,7 @@ jobs:
       - name: Get Timestamp
         shell: powershell
         run: |
-          $timestamp = (Get-Date).ToString('yyyyMMddHHmmss')
+          $timestamp = (Get-Date).ToString('yyyyMMdd_HHmm')
           Add-Content -Path $env:GITHUB_ENV -Value "timestamp=$timestamp"
 
       - name: Delete coreKushal folder if exists
@@ -44,6 +44,7 @@ jobs:
           .\build.bat
 
       - name: Extract Utility Name and Create ZIP file
+        shell: powershell
         run: |
           # Path to the utilityinfo file
           $utilityInfoFile = 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\rl78i1c\application\utilityinfo'
@@ -60,7 +61,7 @@ jobs:
           $timestamp = (Get-Date).ToString('yyyyMMdd_HHmm')
           
           # Set the zip file name using the Utility name
-          $zipFileName = "$utilityName_kushal1p_$timestamp.zip"
+          $zipFileName = "${utilityName}_kushal1p_$timestamp.zip"
           $zipFilePath = "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\$zipFileName"
           
           # Save the zip file name in the environment variable
@@ -76,9 +77,6 @@ jobs:
           
           # Output the zip file path
           Write-Host "ZIP file created: $zipFilePath"
-        shell: powershell
-
-
 
       - name: Upload ZIP to Nexus Repository
         run: |

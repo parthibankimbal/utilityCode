@@ -43,11 +43,19 @@ jobs:
           cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\make'
           .\build.bat
 
-
-      - name: Create ZIP file
+      - name: Extract Utility Name and Create ZIP file
         run: |
+          # Path to the utilityinfo file
+          $utilityInfoFile = 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\rl78i1c\application\utilityinfo'
+          
+          # Extract the Utility name
+          $utilityName = (Select-String -Path $utilityInfoFile -Pattern "^Utility name: (.*)$").Matches.Groups[1].Value
+          
+          # Create timestamp for the zip file
           $timestamp = (Get-Date).ToString('yyyyMMdd_HHmm')
-          $zipFileName = "kushal1p_$timestamp.zip"
+          
+          # Set the zip file name using the Utility name
+          $zipFileName = "$utilityName_kushal1p_$timestamp.zip"
           $zipFilePath = "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\$zipFileName"
           
           # Save the zip file name in the environment variable
@@ -61,6 +69,7 @@ jobs:
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
           -DestinationPath $zipFilePath
         shell: powershell
+
 
 
       - name: Upload ZIP to Nexus Repository

@@ -35,4 +35,34 @@ jobs:
       - name: Add commonCode Subtree
         run: |
           cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal'
-          git subtree add
+          git subtree add --prefix=rl78i1c https://github.com/parthibankimbal/commonCode.git main --squash
+          git subtree add --prefix=rl78i1c/application https://github.com/parthibankimbal/utilityCode.git ${{ github.ref_name }}
+
+      - name: Run the build script
+        run: |
+          cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\make'
+          .\build.bat
+
+      - name: Create ZIP file
+        run: |
+          $date = (Get-Date).ToString('yyyyMMdd')
+          $time = (Get-Date).ToString('HHmm')
+          $zipFileName = "kushal1p_$date_$time.zip"
+          $zipFilePath = "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\$zipFileName"
+          
+          # Save the zip file name in the environment variable
+          Add-Content -Path $env:GITHUB_ENV -Value "zipFileName=$zipFileName"
+          
+          # Create the zip file with the specified files
+          Compress-Archive -Path `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Config.rpj', `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.dll', `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.xml', `
+            'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
+          -DestinationPath $zipFilePath
+        shell: powershell
+
+      - name: Upload ZIP to Nexus Repository
+        run: |
+          curl.exe -v --user "kushal-meter-write:Kimbal@321" --upload-file "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\${{ env.zipFileName }}" https://repo.kimbal.io/repository/kushal-meter-raw/${{ env.zipFileName }}
+        shell: bash

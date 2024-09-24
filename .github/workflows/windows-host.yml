@@ -49,8 +49,13 @@ jobs:
           $utilityInfoFile = 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\rl78i1c\application\utilityinfo'
           
           # Extract the Utility name
-          $utilityName = (Select-String -Path $utilityInfoFile -Pattern "^Utility name: (.*)$").Matches.Groups[1].Value
+          $utilityName = (Select-String -Path $utilityInfoFile -Pattern "^Utility name: (.*)$").Matches[0].Groups[1].Value
           
+          # Check if Utility name was found
+          if (-not $utilityName) {
+            Write-Error "Utility name not found in utilityinfo file"
+          }
+
           # Create timestamp for the zip file
           $timestamp = (Get-Date).ToString('yyyyMMdd_HHmm')
           
@@ -68,6 +73,9 @@ jobs:
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.xml', `
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
           -DestinationPath $zipFilePath
+          
+          # Output the zip file path
+          Write-Host "ZIP file created: $zipFilePath"
         shell: powershell
 
 

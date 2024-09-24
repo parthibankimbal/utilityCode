@@ -20,6 +20,13 @@ jobs:
           $timestamp = (Get-Date).ToString('yyyyMMddHHmmss')
           Add-Content -Path $env:GITHUB_ENV -Value "timestamp=$timestamp"
 
+      - name: Delete coreKushal folder if exists
+        run: |
+          if (Test-Path 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal') {
+            Remove-Item 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal' -Recurse -Force
+          }
+        shell: powershell
+
       - name: Clone coreKushal Repository
         run: |
           cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow'
@@ -35,15 +42,3 @@ jobs:
         run: |
           cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\make'
           .\build.bat
-
-      - name: Create WB_<timestamp> folder and copy utilityinfo
-        run: |
-          cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow'
-          mkdir WB_${{ env.timestamp }}
-          copy utilityinfo WB_${{ env.timestamp }}\
-
-      - name: Upload WB_<timestamp> as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: WB_${{ env.timestamp }}
-          path: WB_${{ env.timestamp }}

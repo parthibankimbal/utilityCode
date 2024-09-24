@@ -58,3 +58,8 @@ jobs:
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
           -DestinationPath $zipFilePath
         shell: powershell
+
+      - name: Upload ZIP to Nexus Repository
+        run: |
+          curl.exe -v --user "kushal-meter-write:Kimbal@321" --upload-file "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\${{ env.zipFileName }}" https://repo.kimbal.io/repository/kushal-meter-raw/${{ env.zipFileName }}
+        shell: bash

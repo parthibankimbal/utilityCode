@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Print Message
-        run: echo "I'm running on GitHub self-hosted Windows host"
+        run: echo "I'm running on GitHub self-hosted Windows host "
 
       - name: Get Timestamp
         shell: powershell

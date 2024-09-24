@@ -22,30 +22,28 @@ jobs:
 
       - name: Clone coreKushal Repository
         run: |
+          cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow'
           git clone https://github.com/parthibankimbal/coreKushal.git
-          cd coreKushal
-        working-directory: C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow
 
       - name: Add commonCode Subtree
         run: |
+          cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal'
           git subtree add --prefix=rl78i1c https://github.com/parthibankimbal/commonCode.git main --squash
           git subtree add --prefix=rl78i1c/application https://github.com/parthibankimbal/utilityCode.git ${{ github.ref_name }}
-        working-directory: C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal
 
       - name: Run the build script
         run: |
+          cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal'
           ./make/build.bat
-        working-directory: C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal
 
       - name: Create WB_<timestamp> folder and copy utilityinfo
         run: |
+          cd 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow'
           mkdir WB_${{ env.timestamp }}
           copy utilityinfo WB_${{ env.timestamp }}\
-        working-directory: C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow
 
       - name: Upload WB_<timestamp> as an artifact
         uses: actions/upload-artifact@v3
         with:
           name: WB_${{ env.timestamp }}
           path: WB_${{ env.timestamp }}
-        working-directory: C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow

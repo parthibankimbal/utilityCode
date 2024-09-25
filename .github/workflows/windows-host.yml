@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Print Message
-        run: echo "I'm running on GitHub self-hosted Windows host "
+        run: echo "I'm running on GitHub self-hosted Windows host"
 
       - name: Get Timestamp
         shell: powershell
@@ -46,39 +46,35 @@ jobs:
       - name: Extract Utility Name and Create ZIP file
         shell: powershell
         run: |
-          # Path to the utilityinfo file
           $utilityInfoFile = 'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\rl78i1c\application\utilityinfo'
-          
-          # Extract the Utility name
           $utilityName = (Select-String -Path $utilityInfoFile -Pattern "^Utility name: (.*)$").Matches[0].Groups[1].Value
-          
-          # Check if Utility name was found
-          if (-not $utilityName) {
-            Write-Error "Utility name not found in utilityinfo file"
-          }
-
-          # Create timestamp for the zip file
+          if (-not $utilityName) { Write-Error "Utility name not found in utilityinfo file" }
           $timestamp = (Get-Date).ToString('yyyyMMdd_HHmm')
-          
-          # Set the zip file name using the Utility name
           $zipFileName = "${utilityName}_kushal1p_$timestamp.zip"
           $zipFilePath = "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\$zipFileName"
-          
-          # Save the zip file name in the environment variable
           Add-Content -Path $env:GITHUB_ENV -Value "zipFileName=$zipFileName"
-          
-          # Create the zip file with the specified files
+          Add-Content -Path $env:GITHUB_ENV -Value "utilityName=$utilityName"
           Compress-Archive -Path `
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Config.rpj', `
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.dll', `
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\Newtonsoft.Json.xml', `
             'C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\coreKushal\00Build\CS+_CCRL\ImageBuilder\UMD_ImageBuilder.exe' `
           -DestinationPath $zipFilePath
-          
-          # Output the zip file path
           Write-Host "ZIP file created: $zipFilePath"
 
       - name: Upload ZIP to Nexus Repository
         run: |
           curl.exe -v --user "kushal-meter-write:Kimbal@321" --upload-file "C:\Users\ParthibanEthiraj\OneDrive - Sinhal Udyog pvt ltd\Downloads\WorkFlow\${{ env.zipFileName }}" https://repo.kimbal.io/repository/kushal-meter-raw/${{ env.zipFileName }}
         shell: bash
+
+      - name: Send Email Notification
+        shell: powershell
+        run: |
+          $smtpServer = "smtp.office365.com"
+          $smtpFrom = "kushalnotifications@kimbal.io"
+          $smtpTo = "parthiban.ethiraj@kimbal.io"
+          $subject = "Build Notification - Utility: ${{ env.utilityName }}"
+          $body = "The build for Utility ${{ env.utilityName }} has completed. The ZIP file can be downloaded from: https://repo.kimbal.io/repository/kushal-meter-raw/${{ env.zipFileName }}"
+          $password = ConvertTo-SecureString "Duw31423" -AsPlainText -Force
+          $cred = New-Object System.Management.Automation.PSCredential("kushalnotifications@kimbal.io", $password)
+          Send-MailMessage -From $smtpFrom -To $smtpTo -Subject $subject -Body $body -SmtpServer $smtpServer -Credential $cred -UseSsl -Port 587

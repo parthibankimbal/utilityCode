@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Print Message
         run: echo "I'm running on GitHub self-hosted Windows host"
@@ -25,7 +25,7 @@ jobs:
           copy utilityinfo WB_${{ env.timestamp }}\
 
       - name: Upload WB_<timestamp> as an artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: WB_${{ env.timestamp }}
           path: WB_${{ env.timestamp }}

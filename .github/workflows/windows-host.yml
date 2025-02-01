@@ -4,8 +4,8 @@ on:
 
   pull_request:
     branches:
-      - WB
-      - NBPDCL
+      - 'WB'
+      - 'NBPDCL'
 
 jobs:
   build:

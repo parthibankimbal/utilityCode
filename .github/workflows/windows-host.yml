@@ -1,6 +1,11 @@
 name: Build and Notify
 
-on: [push]
+on:
+
+  pull_request:
+    branches:
+      - WB*
+      - NBPDCL*
 
 jobs:
   build:

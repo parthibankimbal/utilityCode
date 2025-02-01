@@ -1,11 +1,13 @@
 name: Build and Notify
 
 on:
-
   pull_request:
+    # This triggers the workflow when the pull request is closed (merged or manually closed).
     branches:
-      - WB*
-      - NBPDCL*
+      - 'WB'
+      - 'NBPDCL'
+    types:
+      - closed  # Trigger only when the PR is closed (after merge)
 
 jobs:
   build:
@@ -14,6 +16,8 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}  # Check out the base branch (e.g., 'WB' or 'NBPDCL') of the PR
 
       - name: Print Message
         run: echo "I'm running on GitHub self-hosted Windows host"
